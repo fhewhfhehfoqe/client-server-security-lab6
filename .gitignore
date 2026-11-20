@@ -1,0 +1,15 @@
+server/server.py.backup
+client/client.py.backup
+compose.yaml.backup
+
+logs/*.log
+logs/*
+
+certs/server.key
+certs/untrusted-ca.key
+
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env

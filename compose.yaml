@@ -1,0 +1,42 @@
+services:
+  server:
+    image: python:3.10-slim
+    container_name: security-server
+    working_dir: /app
+    command: python -u server.py
+    environment:
+      AUTH_USER: student
+      AUTH_PASSWORD: SecurePass123!
+    volumes:
+      - ./server:/app:ro
+      - ./certs/server.crt:/certs/server.crt:ro
+      - ./certs/server.key:/certs/server.key:ro
+      - ./logs:/logs
+    networks:
+      - security-net
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+
+  client:
+    image: python:3.10-slim
+    container_name: security-client
+    working_dir: /app
+    command: python -u client.py
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./client:/app:ro
+      - ./certs/ca.crt:/certs/ca.crt:ro
+      - ./certs/untrusted-ca.crt:/certs/untrusted-ca.crt:ro
+      - ./logs:/logs
+    networks:
+      - security-net
+    environment:
+      CA_FILE: /certs/ca.crt
+    profiles:
+      - tools
+
+networks:
+  security-net:
+    driver: bridge
